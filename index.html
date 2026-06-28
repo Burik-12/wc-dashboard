@@ -7,60 +7,164 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 <style>
   :root { color-scheme: light dark; }
-  body { font-family: -apple-system, system-ui, sans-serif; max-width: 860px; margin: 0 auto; padding: 24px; }
+  body { font-family: -apple-system, system-ui, sans-serif; max-width: 920px; margin: 0 auto; padding: 24px; }
   h1 { font-size: 22px; margin: 0 0 4px; }
-  .meta { color: #888; font-size: 13px; margin-bottom: 20px; }
+  .meta { color: #888; font-size: 13px; margin-bottom: 16px; }
+  .payout { background: #2563eb14; border: 1px solid #2563eb55; border-radius: 10px; padding: 12px 14px; margin-bottom: 18px; font-size: 14px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .payout input { font-size: 15px; padding: 6px 8px; border-radius: 7px; border: 1px solid #8886; background: transparent; color: inherit; }
+  .payout #bank { width: 150px; }
+  .payout #cur { width: 56px; }
   .grid { display: flex; flex-wrap: wrap; gap: 28px; align-items: center; }
   .chart-box { width: 320px; height: 320px; }
+  .table-wrap { overflow-x: auto; }
   table { border-collapse: collapse; width: 100%; margin-top: 24px; font-size: 14px; }
-  th, td { padding: 8px 10px; text-align: right; border-bottom: 1px solid #8883; }
+  th, td { padding: 8px 10px; text-align: right; border-bottom: 1px solid #8883; white-space: nowrap; }
   th:first-child, td:first-child { text-align: left; }
   .dot { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 7px; vertical-align: middle; }
   .pct { font-weight: 700; }
+  .money { font-weight: 700; color: #10b981; }
+  .muted { color: #888; }
   .warn { background: #f59e0b22; border: 1px solid #f59e0b88; border-radius: 8px; padding: 10px 14px; margin-bottom: 18px; font-size: 14px; }
   .note { color: #888; font-size: 12px; margin-top: 18px; line-height: 1.5; }
   .weights { font-size: 12px; color: #888; margin-top: 6px; }
+  .live { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #10b981; margin-right: 5px; vertical-align: middle; }
 </style>
 </head>
 <body>
   <h1>Вклад партнёров — World Cup Clips</h1>
-  <div class="meta">Обновлено: 2026-06-28 13:24 UTC · коммитов: 6 · строк: 1473 · выпусков: 1</div>
+  <div class="meta" id="meta"></div>
   <div class="warn">⚠️ Пока в истории только один автор — диаграмма станет осмысленной, когда напарник начнёт коммитить под своим именем (см. <code>.mailmap</code>).</div>
+  <div class="payout">
+    <span>💰 Общий банк:</span>
+    <input id="bank" type="number" min="0" step="100" placeholder="напр. 50000" inputmode="numeric">
+    <input id="cur" type="text" maxlength="4" placeholder="฿">
+    <span class="muted">→ суммы посчитаются как доля × банк. Хранится только в твоём браузере.</span>
+  </div>
   <div class="grid">
     <div class="chart-box"><canvas id="pie"></canvas></div>
     <div id="legend"></div>
   </div>
-  <table id="tbl">
-    <thead><tr><th>Партнёр</th><th>Доля</th><th>Коммиты</th><th>Строки +</th><th>Выпуски</th></tr></thead>
-    <tbody></tbody>
-  </table>
+  <div class="table-wrap">
+    <table id="tbl">
+      <thead><tr>
+        <th>Партнёр</th><th>Доля</th><th>К выплате</th>
+        <th>Коммиты</th><th>Строки +</th><th>Строки −</th><th>Выпуски</th><th>Активность</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
   <div class="weights">Веса микса: коммиты 0.3 · строки 0.3 · выпуски 0.4 (правятся в scripts/contribution_config.json)</div>
-  <div class="note">Дашборд считает ДОЛЮ вклада. Сумму к выплате = доля × общий банк (банк задаётся при расчёте выплаты, здесь денег нет).<br>Это авто-генерируемый файл. Не редактировать вручную — пересоздаётся скриптом scripts/build_dashboard.py.</div>
-<script>
-const D = {"title": "Вклад партнёров — World Cup Clips", "currency_note": "Дашборд считает ДОЛЮ вклада. Сумму к выплате = доля × общий банк (банк задаётся при расчёте выплаты, здесь денег нет).", "weights": {"commits": 0.3, "lines": 0.3, "units": 0.4}, "generated_at": "2026-06-28 13:24 UTC", "total_commits": 6, "total_lines": 1473, "unit_files": ["content/episodes/ep001-biggest-upsets-worldcup-2026.md"], "rows": [{"author": "Вова", "commits": 6, "lines": 1473, "units": 1.0, "share_pct": 100.0, "color": "#2563eb"}], "single_author_warning": true};
-const labels = D.rows.map(r => r.author);
-const values = D.rows.map(r => r.share_pct);
-const colors = D.rows.map(r => r.color);
-new Chart(document.getElementById('pie'), {
-  type: 'doughnut',
-  data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 2 }] },
-  options: {
-    plugins: {
-      legend: { display: false },
-      tooltip: { callbacks: { label: c => ` ${c.label}: ${c.parsed}%` } }
-    },
-    cutout: '58%'
+  <div class="note">Введи общий банк в поле выше — суммы посчитаются автоматически (доля × банк). Денег здесь нигде не хранится, только доля вклада; введённый банк остаётся в твоём браузере.<br>Это авто-генерируемый файл. Не редактировать вручную — пересоздаётся скриптом scripts/build_dashboard.py.</div>
+  <script>window.__DASH__ = {"title": "Вклад партнёров — World Cup Clips", "currency_note": "Введи общий банк в поле выше — суммы посчитаются автоматически (доля × банк). Денег здесь нигде не хранится, только доля вклада; введённый банк остаётся в твоём браузере.", "weights": {"commits": 0.3, "lines": 0.3, "units": 0.4}, "generated_at": "2026-06-28 14:05 UTC", "total_commits": 7, "total_lines": 1679, "total_deleted": 91, "unit_files": ["content/episodes/ep001-biggest-upsets-worldcup-2026.md"], "rows": [{"author": "Вова", "commits": 7, "lines": 1679, "deleted": 91, "units": 1.0, "last_active": "2026-06-28", "share_pct": 100.0, "color": "#2563eb"}], "single_author_warning": true};</script>
+  <script>
+
+(function () {
+  let D = window.__DASH__;
+  let chart = null;
+
+  const $ = (id) => document.getElementById(id);
+  const ru = (n) => Number(n).toLocaleString('ru-RU', { maximumFractionDigits: 0 });
+
+  function renderMeta() {
+    $('meta').innerHTML =
+      '<span class="live"></span>Обновлено: ' + D.generated_at +
+      ' · коммитов: ' + D.total_commits +
+      ' · строк: +' + D.total_lines + ' / −' + (D.total_deleted || 0) +
+      ' · выпусков: ' + (D.unit_files ? D.unit_files.length : 0);
   }
-});
-const tb = document.querySelector('#tbl tbody');
-D.rows.forEach(r => {
-  const tr = document.createElement('tr');
-  tr.innerHTML = `<td><span class="dot" style="background:${r.color}"></span>${r.author}</td>`
-    + `<td class="pct">${r.share_pct}%</td><td>${r.commits}</td><td>${r.lines}</td><td>${r.units}</td>`;
-  tb.appendChild(tr);
-});
-const lg = document.getElementById('legend');
-lg.innerHTML = D.rows.map(r => `<div><span class="dot" style="background:${r.color}"></span>${r.author} — <b>${r.share_pct}%</b></div>`).join('');
+
+  function renderChart() {
+    const labels = D.rows.map((r) => r.author);
+    const values = D.rows.map((r) => r.share_pct);
+    const colors = D.rows.map((r) => r.color);
+    if (chart) {
+      chart.data.labels = labels;
+      chart.data.datasets[0].data = values;
+      chart.data.datasets[0].backgroundColor = colors;
+      chart.update();
+    } else {
+      chart = new Chart($('pie'), {
+        type: 'doughnut',
+        data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 2 }] },
+        options: {
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: (c) => ' ' + c.label + ': ' + c.parsed + '%' } }
+          },
+          cutout: '58%'
+        }
+      });
+    }
+    $('legend').innerHTML = D.rows.map((r) =>
+      '<div><span class="dot" style="background:' + r.color + '"></span>' +
+      r.author + ' — <b>' + r.share_pct + '%</b></div>').join('');
+  }
+
+  function renderTable() {
+    const bank = parseFloat($('bank').value);
+    const cur = ($('cur').value || '').trim();
+    const showMoney = !isNaN(bank) && bank > 0;
+    const tb = document.querySelector('#tbl tbody');
+    tb.innerHTML = D.rows.map((r) => {
+      let money = '<td class="muted">—</td>';
+      if (showMoney) {
+        const amt = Math.round(bank * r.share_pct / 100);
+        money = '<td class="money">' + ru(amt) + (cur ? ' ' + cur : '') + '</td>';
+      }
+      return '<tr>' +
+        '<td><span class="dot" style="background:' + r.color + '"></span>' + r.author + '</td>' +
+        '<td class="pct">' + r.share_pct + '%</td>' +
+        money +
+        '<td>' + r.commits + '</td>' +
+        '<td>' + ru(r.lines) + '</td>' +
+        '<td class="muted">' + ru(r.deleted || 0) + '</td>' +
+        '<td>' + r.units + '</td>' +
+        '<td class="muted">' + (r.last_active || '—') + '</td>' +
+        '</tr>';
+    }).join('');
+  }
+
+  function renderAll() {
+    renderMeta();
+    renderChart();
+    renderTable();
+  }
+
+  // Калькулятор выплат: значение банка/валюты живёт в localStorage этого браузера.
+  try {
+    const saved = JSON.parse(localStorage.getItem('wc_payout') || '{}');
+    if (saved.bank) $('bank').value = saved.bank;
+    if (saved.cur) $('cur').value = saved.cur;
+  } catch (e) {}
+
+  function onCalcChange() {
+    try {
+      localStorage.setItem('wc_payout', JSON.stringify({ bank: $('bank').value, cur: $('cur').value }));
+    } catch (e) {}
+    renderTable();
+  }
+  $('bank').addEventListener('input', onCalcChange);
+  $('cur').addEventListener('input', onCalcChange);
+
+  renderAll();
+
+  // Автообновление: тянем свежий data.json (с обходом кэша) и перерисовываем,
+  // если поменялась метка времени. На file:// тихо игнорируется — встроенные
+  // данные уже отрисованы.
+  async function refresh() {
+    try {
+      const r = await fetch('./data.json?ts=' + new Date().getTime(), { cache: 'no-store' });
+      if (!r.ok) return;
+      const fresh = await r.json();
+      if (fresh && fresh.generated_at && fresh.generated_at !== D.generated_at) {
+        D = fresh;
+        renderAll();
+      }
+    } catch (e) {}
+  }
+  setInterval(refresh, 180000); // каждые 3 минуты
+})();
+
 </script>
 </body>
 </html>

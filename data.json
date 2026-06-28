@@ -1,23 +1,26 @@
 {
   "title": "Вклад партнёров — World Cup Clips",
-  "currency_note": "Дашборд считает ДОЛЮ вклада. Сумму к выплате = доля × общий банк (банк задаётся при расчёте выплаты, здесь денег нет).",
+  "currency_note": "Введи общий банк в поле выше — суммы посчитаются автоматически (доля × банк). Денег здесь нигде не хранится, только доля вклада; введённый банк остаётся в твоём браузере.",
   "weights": {
     "commits": 0.3,
     "lines": 0.3,
     "units": 0.4
   },
-  "generated_at": "2026-06-28 13:24 UTC",
-  "total_commits": 6,
-  "total_lines": 1473,
+  "generated_at": "2026-06-28 14:05 UTC",
+  "total_commits": 7,
+  "total_lines": 1679,
+  "total_deleted": 91,
   "unit_files": [
     "content/episodes/ep001-biggest-upsets-worldcup-2026.md"
   ],
   "rows": [
     {
       "author": "Вова",
-      "commits": 6,
-      "lines": 1473,
+      "commits": 7,
+      "lines": 1679,
+      "deleted": 91,
       "units": 1.0,
+      "last_active": "2026-06-28",
       "share_pct": 100.0,
       "color": "#2563eb"
     }
