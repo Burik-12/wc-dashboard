@@ -60,6 +60,13 @@
   .badge.progress { background: #f59e0b22; color: #f59e0b; }
   .badge.ready { background: #10b98122; color: #10b981; }
   .badge.published { background: #2563eb22; color: #2563eb; }
+  .badge.stale { background: #ef444422; color: #ef4444; }
+  .rhythm { border: 1px solid #8883; border-radius: 11px; padding: 12px 14px; margin-bottom: 16px; }
+  .rhythm.good { background: #10b98114; border-color: #10b98155; }
+  .rhythm.warn { background: #f59e0b14; border-color: #f59e0b66; }
+  .rhythm.idle { background: #8881; }
+  .rhythm-top { font-weight: 600; margin-bottom: 5px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .rhythm-msg { font-size: 13px; color: #888; }
   .ep .contrib { display: flex; flex-wrap: wrap; gap: 10px; color: #888; font-size: 13px; }
   .ep .contrib b { color: inherit; }
   .ep .cbar { flex: 1 1 130px; min-width: 110px; height: 7px; border-radius: 4px; background: #8882; overflow: hidden; display: flex; }
@@ -105,7 +112,7 @@
   </details>
   <div class="weights">Веса микса: коммиты 0.3 · строки 0.3 · выпуски 0.4 (правятся в scripts/contribution_config.json)</div>
   <div class="note">Введи общий банк в поле выше — суммы посчитаются автоматически (доля × банк). Денег здесь нигде не хранится, только доля вклада; введённый банк остаётся в твоём браузере.<br>Это авто-генерируемый файл. Не редактировать вручную — пересоздаётся скриптом scripts/build_dashboard.py.</div>
-  <script>window.__DASH__ = {"title": "Вклад партнёров — World Cup Clips", "currency_note": "Введи общий банк в поле выше — суммы посчитаются автоматически (доля × банк). Денег здесь нигде не хранится, только доля вклада; введённый банк остаётся в твоём браузере.", "weights": {"commits": 0.3, "lines": 0.3, "units": 0.4}, "generated_at": "2026-06-28 15:15 UTC", "total_commits": 9, "total_lines": 2044, "total_deleted": 129, "unit_files": ["EP001"], "rows": [{"author": "Вова", "commits": 9, "lines": 2044, "deleted": 129, "units": 1.0, "last_active": "2026-06-28", "share_pct": 100.0, "color": "#2563eb"}], "episodes": [{"code": "EP001", "status": "ready", "contributors": [{"author": "Вова", "pct": 100, "color": "#2563eb"}]}], "pipeline": {"ideas": 3, "progress": 0, "ready": 1, "published": 0}, "single_author_warning": true};</script>
+  <script>window.__DASH__ = {"title": "Вклад партнёров — World Cup Clips", "currency_note": "Введи общий банк в поле выше — суммы посчитаются автоматически (доля × банк). Денег здесь нигде не хранится, только доля вклада; введённый банк остаётся в твоём браузере.", "weights": {"commits": 0.3, "lines": 0.3, "units": 0.4}, "generated_at": "2026-06-28 15:29 UTC", "total_commits": 10, "total_lines": 2127, "total_deleted": 131, "unit_files": ["EP001"], "rows": [{"author": "Вова", "commits": 10, "lines": 2127, "deleted": 131, "units": 1.0, "last_active": "2026-06-28", "share_pct": 100.0, "color": "#2563eb"}], "episodes": [{"code": "EP001", "status": "ready", "pub_date": null, "contributors": [{"author": "Вова", "pct": 100, "color": "#2563eb"}]}], "pipeline": {"ideas": 3, "progress": 0, "ready": 1, "published": 0}, "channel": {"target_per_week": 1, "stale_after_days": 10, "published_dates": [], "last_published": null}, "single_author_warning": true};</script>
   <script>
 
 (function () {
@@ -160,6 +167,46 @@
       ' · опубликовано: ' + pub;
   }
 
+  // Ритм публикаций vs цель + бейдж «давно не публиковали».
+  // Дни считаем в браузере от ТЕКУЩЕЙ даты — счётчик живой, без пересборки.
+  function rhythmHTML() {
+    const ch = D.channel || {};
+    const target = ch.target_per_week || 1;
+    const staleAfter = ch.stale_after_days || 10;
+    const dates = (ch.published_dates || []).slice().sort();
+    const dayMs = 86400000;
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const target30 = Math.max(1, Math.round(target * 30 / 7));
+
+    let cls, msg, badge;
+    if (!dates.length) {
+      const ready = (D.pipeline && D.pipeline.ready) || 0;
+      cls = ready ? 'warn' : 'idle';
+      msg = ready
+        ? 'Готовых к публикации: <b>' + ready + '</b>, опубликовано пока 0. Пора выпускать! Цель — ' + target + ' ролик/нед.'
+        : 'Ещё ни одного ролика не опубликовано. Цель — ' + target + ' ролик/нед.';
+      badge = ready
+        ? '<span class="badge stale">⏰ пора публиковать</span>'
+        : '<span class="badge progress">старт ждёт</span>';
+    } else {
+      const last = new Date(dates[dates.length - 1] + 'T00:00:00');
+      const daysSince = Math.max(0, Math.floor((today - last) / dayMs));
+      const in30 = dates.filter((d) => (today - new Date(d + 'T00:00:00')) / dayMs <= 30).length;
+      const onTrack = in30 >= target30;
+      cls = (daysSince > staleAfter) ? 'warn' : (onTrack ? 'good' : 'warn');
+      msg = 'За 30 дней: <b>' + in30 + '</b> из ~' + target30 + ' (цель ' + target + '/нед). ' +
+            'Последняя публикация — <b>' + daysSince + ' дн.</b> назад.';
+      badge = (daysSince > staleAfter)
+        ? '<span class="badge stale">⏰ давно не публиковали</span>'
+        : (onTrack ? '<span class="badge ready">в ритме ✓</span>'
+                   : '<span class="badge progress">отстаём от ритма</span>');
+    }
+    return '<div class="rhythm ' + cls + '">' +
+      '<div class="rhythm-top">🎬 Ритм публикаций ' + badge + '</div>' +
+      '<div class="rhythm-msg">' + msg + '</div></div>';
+  }
+
   // Канальный слой: воронка конвейера + вклад по каждому выпуску.
   // Показываем только коды/стадии/доли — никаких заголовков и стратегии.
   function renderChannel() {
@@ -193,6 +240,7 @@
     }).join('');
 
     el.innerHTML = '<h2>📺 Канал — конвейер выпусков</h2>' +
+      rhythmHTML() +
       '<div class="funnel">' + funnel + '</div>' +
       (eps ? '<div class="eps">' + eps + '</div>' : '<div class="muted">Выпусков пока нет.</div>');
   }

@@ -6,19 +6,19 @@
     "lines": 0.3,
     "units": 0.4
   },
-  "generated_at": "2026-06-28 15:15 UTC",
-  "total_commits": 9,
-  "total_lines": 2044,
-  "total_deleted": 129,
+  "generated_at": "2026-06-28 15:29 UTC",
+  "total_commits": 10,
+  "total_lines": 2127,
+  "total_deleted": 131,
   "unit_files": [
     "EP001"
   ],
   "rows": [
     {
       "author": "Вова",
-      "commits": 9,
-      "lines": 2044,
-      "deleted": 129,
+      "commits": 10,
+      "lines": 2127,
+      "deleted": 131,
       "units": 1.0,
       "last_active": "2026-06-28",
       "share_pct": 100.0,
@@ -29,6 +29,7 @@
     {
       "code": "EP001",
       "status": "ready",
+      "pub_date": null,
       "contributors": [
         {
           "author": "Вова",
@@ -43,6 +44,12 @@
     "progress": 0,
     "ready": 1,
     "published": 0
+  },
+  "channel": {
+    "target_per_week": 1,
+    "stale_after_days": 10,
+    "published_dates": [],
+    "last_published": null
   },
   "single_author_warning": true
 }
