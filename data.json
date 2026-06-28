@@ -6,19 +6,19 @@
     "lines": 0.3,
     "units": 0.4
   },
-  "generated_at": "2026-06-28 17:35 UTC",
-  "total_commits": 11,
-  "total_lines": 2226,
-  "total_deleted": 131,
+  "generated_at": "2026-06-28 18:10 UTC",
+  "total_commits": 12,
+  "total_lines": 2232,
+  "total_deleted": 133,
   "unit_files": [
     "EP001"
   ],
   "rows": [
     {
       "author": "Вова",
-      "commits": 11,
-      "lines": 2226,
-      "deleted": 131,
+      "commits": 12,
+      "lines": 2232,
+      "deleted": 133,
       "units": 1.0,
       "last_active": "2026-06-29",
       "share_pct": 100.0,
