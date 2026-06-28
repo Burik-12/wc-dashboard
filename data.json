@@ -6,17 +6,17 @@
     "lines": 0.3,
     "units": 0.4
   },
-  "generated_at": "2026-06-28 19:47 +07",
-  "total_commits": 5,
-  "total_lines": 1166,
+  "generated_at": "2026-06-28 13:24 UTC",
+  "total_commits": 6,
+  "total_lines": 1473,
   "unit_files": [
     "content/episodes/ep001-biggest-upsets-worldcup-2026.md"
   ],
   "rows": [
     {
       "author": "Вова",
-      "commits": 5,
-      "lines": 1166,
+      "commits": 6,
+      "lines": 1473,
       "units": 1.0,
       "share_pct": 100.0,
       "color": "#2563eb"
