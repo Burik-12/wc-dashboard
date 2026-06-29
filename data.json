@@ -6,10 +6,10 @@
     "lines": 0.3,
     "units": 0.4
   },
-  "generated_at": "2026-06-29 06:49 UTC",
-  "total_commits": 15,
-  "total_lines": 2898,
-  "total_deleted": 133,
+  "generated_at": "2026-06-29 07:28 UTC",
+  "total_commits": 16,
+  "total_lines": 3122,
+  "total_deleted": 270,
   "unit_files": [
     "EP001"
   ],
@@ -21,17 +21,17 @@
       "deleted": 133,
       "units": 1.0,
       "last_active": "2026-06-29",
-      "share_pct": 87.1,
+      "share_pct": 83.9,
       "color": "#2563eb"
     },
     {
       "author": "Виталик",
-      "commits": 3,
-      "lines": 666,
-      "deleted": 0,
+      "commits": 4,
+      "lines": 890,
+      "deleted": 137,
       "units": 0.0,
       "last_active": "2026-06-29",
-      "share_pct": 12.9,
+      "share_pct": 16.1,
       "color": "#f59e0b"
     }
   ],
