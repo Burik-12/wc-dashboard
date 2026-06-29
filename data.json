@@ -6,9 +6,9 @@
     "lines": 0.3,
     "units": 0.4
   },
-  "generated_at": "2026-06-28 18:10 UTC",
-  "total_commits": 12,
-  "total_lines": 2232,
+  "generated_at": "2026-06-29 03:31 UTC",
+  "total_commits": 13,
+  "total_lines": 2465,
   "total_deleted": 133,
   "unit_files": [
     "EP001"
@@ -21,8 +21,18 @@
       "deleted": 133,
       "units": 1.0,
       "last_active": "2026-06-29",
-      "share_pct": 100.0,
+      "share_pct": 94.9,
       "color": "#2563eb"
+    },
+    {
+      "author": "Виталик",
+      "commits": 1,
+      "lines": 233,
+      "deleted": 0,
+      "units": 0.0,
+      "last_active": "2026-06-29",
+      "share_pct": 5.1,
+      "color": "#f59e0b"
     }
   ],
   "episodes": [
@@ -51,5 +61,5 @@
     "published_dates": [],
     "last_published": null
   },
-  "single_author_warning": true
+  "single_author_warning": false
 }
